@@ -6,7 +6,7 @@ public class TriangleImageManager {
     public List<char> RowCharacters { get; private set; }
     public int NumberOfColumns { get; private set; }
 
-    const int triangleWidth = 10;
+    const int TRIANGLE_WIDTH = 10;
     const int COLUMNS_PER_WIDTH = 2;
     const string VERTEX_NOT_IN_BOUNDS = "Vertex not in bounds";
 
@@ -32,12 +32,12 @@ public class TriangleImageManager {
         // if column is odd, it's a topRightTriangle
         Boolean isTriangleOrientedBottomLeft = (column % 2) != 0;
         var startingXCoordinate = isTriangleOrientedBottomLeft ?
-            (column / COLUMNS_PER_WIDTH) * triangleWidth :
-            ((column -1) / COLUMNS_PER_WIDTH) * triangleWidth;
+            (column / COLUMNS_PER_WIDTH) * TRIANGLE_WIDTH :
+            ((column -1) / COLUMNS_PER_WIDTH) * TRIANGLE_WIDTH;
 
-        var TopLeftCornerCoordinate = new Coordinate(startingXCoordinate, rowIndex * triangleWidth);
+        var TopLeftCornerCoordinate = new Coordinate(startingXCoordinate, rowIndex * TRIANGLE_WIDTH);
 
-        return GetTriangleCoordinates(TopLeftCornerCoordinate, triangleWidth, isTriangleOrientedBottomLeft);
+        return GetTriangleCoordinates(TopLeftCornerCoordinate, TRIANGLE_WIDTH, isTriangleOrientedBottomLeft);
     }
 
     public List<Triangle> GetTriangleCoordinatesForRowUpToColumn(char row, int column) {
@@ -51,16 +51,16 @@ public class TriangleImageManager {
         }
 
         var rowOfTriangles = new List<Triangle>();
-        var rowTopLeftCornerCoordinate = new Coordinate(0, rowIndex * triangleWidth);
+        var rowTopLeftCornerCoordinate = new Coordinate(0, rowIndex * TRIANGLE_WIDTH);
 
         for(int i = 1; i <= column; i++ ) {
             // if column is even, it's a BottomLeft triangle
             // if column is odd, it's a topRightTriangle
             Boolean isTriangleOrientedBottomLeft = (i % COLUMNS_PER_WIDTH) != 0;
-            rowOfTriangles.Add(GetTriangleCoordinates(rowTopLeftCornerCoordinate, triangleWidth, isTriangleOrientedBottomLeft));
+            rowOfTriangles.Add(GetTriangleCoordinates(rowTopLeftCornerCoordinate, TRIANGLE_WIDTH, isTriangleOrientedBottomLeft));
 
             if(!isTriangleOrientedBottomLeft) {
-                rowTopLeftCornerCoordinate.X += triangleWidth;
+                rowTopLeftCornerCoordinate.X += TRIANGLE_WIDTH;
             }
         }
 
@@ -68,8 +68,8 @@ public class TriangleImageManager {
     }
 
     public Tuple<char,int> GetRowAndColumnForTriangleVertices(Coordinate v1, Coordinate v2, Coordinate v3) {
-        var maxX = NumberOfColumns * triangleWidth;
-        var maxY = RowCharacters.Count * triangleWidth;
+        var maxX = NumberOfColumns * TRIANGLE_WIDTH;
+        var maxY = RowCharacters.Count * TRIANGLE_WIDTH;
 
         if(!isCoordinateInBounds(v1, maxX, maxY)) {
           throw new ArgumentException(VERTEX_NOT_IN_BOUNDS, "v1");
@@ -83,10 +83,10 @@ public class TriangleImageManager {
 
         // Could use additional validation to make sure coordinates are valid triangles.
         // v2 coordinate should coorespond to top left corner of (square) essentially
-        var rowIndex = v2.Y / triangleWidth;
+        var rowIndex = v2.Y / TRIANGLE_WIDTH;
 
         var isBottomLeftTriangle = v2.X == v1.X;
-        var baseColumnIndex = v2.X / (triangleWidth / COLUMNS_PER_WIDTH);
+        var baseColumnIndex = v2.X / (TRIANGLE_WIDTH / COLUMNS_PER_WIDTH);
         var columnIndex = baseColumnIndex + (isBottomLeftTriangle ? 1 : 2);
 
         return new Tuple<char,int>(RowCharacters[rowIndex], columnIndex);
